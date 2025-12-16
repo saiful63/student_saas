@@ -4,6 +4,7 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head,Link,router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import { can } from '@/lib/can';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -30,7 +31,7 @@ function roleDelete(id){
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-3">
             <div class="overflow-x-auto">
-                <Link href="/roles/create" class="bg-blue-500 text-white px-2 py-1 rounded">Create</Link>
+                <Link v-if="can('roles.create')" href="/roles/create" class="bg-blue-500 text-white px-2 py-1 rounded">Create</Link>
                 <table class="min-w-full border border-gray-300 text-sm text-left">
                     <thead class="bg-gray-100">
                         <tr>
@@ -48,12 +49,11 @@ function roleDelete(id){
                                 <span v-for="permission in role.permissions" class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-black-400 inset-ring inset-ring-green-500/20">{{ permission.name }}</span>
                             </td>
                             <td class="px-4 py-2 space-x-2">
-                                <Link :href="`users/${role.id}`"class="bg-gray-500 text-white px-2 py-1 rounded pointer">Show</Link>
-                                <!-- <Link :href="`users/${role.id}/edit`"class="bg-blue-500 text-white px-2 py-1 rounded pointer">Edit</Link> -->
+                                <Link v-if="can('roles.view')" :href="`users/${role.id}`"class="bg-gray-500 text-white px-2 py-1 rounded pointer">Show</Link>
+                               
+                                <Link v-if="can('roles.edit')" :href="route('roles.edit', role.id)" class="bg-blue-500 text-white px-2 py-1 rounded pointer">Edit</Link>
 
-                                <Link :href="route('roles.edit', role.id)" class="bg-blue-500 text-white px-2 py-1 rounded pointer">Edit</Link>
-
-                                <button @click="roleDelete(role.id)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                                <button v-if="can('roles.delete')" @click="roleDelete(role.id)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                             </td>
                         </tr>
                     </tbody>
