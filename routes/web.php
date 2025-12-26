@@ -17,6 +17,7 @@ Route::resource('users',UserController::class)->only(['create','store','index'])
 Route::resource('roles',RolesController::class);
 Route::resource('roles',RolesController::class)->only(['index'])->middleware("permission:roles.index");
 Route::resource('roles',RolesController::class)->only(['create','store',])->middleware("permission:roles.create");
+Route::resource('roles',RolesController::class)->only(['edit',])->middleware("permission:roles.edit");
 
 Route::get('index/create2/user',[UserController::class,'indexCreate2User'])->name('index.create2.user');
 Route::post('save/create2/user',[UserController::class,'saveCreate2User'])->name('save.create2.user');

@@ -95,4 +95,24 @@ class UserController extends Controller
         User::destroy($id);
         return to_route("users.index");
     }
+
+    public function indexCreate2User(){
+        return Inertia::render('User2/Create',[
+            'permissions'=>Permission::pluck('name')->all()
+        ]);
+    }
+
+    public function saveCreate2User(Request $request){
+        $request->validate([
+            'name'=>['required'],
+            'email'=>['required'],
+            'password'=>['required']
+        ]);
+        $user = User::create(
+            $request->only(['name','email'])+['password'=>Hash::make($request->password)]
+        );
+        
+        $user->givePermissionTo($request->selectedPermission);
+        return to_route("users.index");
+    }
 }

@@ -31,7 +31,7 @@ function userDelete(id){
         <div class="p-3">
             <div class="overflow-x-auto">
                 <Link v-if="can('users.create')" href="/users/create" class="bg-blue-500 text-white px-2 py-1 rounded">Create</Link>
-                <Link  href="/index/create2/user" class="bg-blue-500 text-white px-2 py-1 rounded">Create2</Link>
+                <Link  href="/index/create2/user" class="bg-blue-500 text-white px-2 py-1 rounded ml-2">Create2</Link>
                 <table class="min-w-full border border-gray-300 text-sm text-left">
                     <thead class="bg-gray-100">
                         <tr>
