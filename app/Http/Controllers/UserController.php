@@ -39,7 +39,8 @@ class UserController extends Controller
         $request->validate([
             'name'=>['required'],
             'email'=>['required'],
-            'password'=>['required']
+            'password'=>['required'],
+            'user_type'=>1
         ]);
         $user = User::create(
             $request->only(['name','email'])+['password'=>Hash::make($request->password)]
@@ -106,7 +107,8 @@ class UserController extends Controller
         $request->validate([
             'name'=>['required'],
             'email'=>['required'],
-            'password'=>['required']
+            'password'=>['required'],
+            'user_type'=>2
         ]);
         $user = User::create(
             $request->only(['name','email'])+['password'=>Hash::make($request->password)]
@@ -114,5 +116,13 @@ class UserController extends Controller
         
         $user->givePermissionTo($request->selectedPermission);
         return to_route("users.index");
+    }
+
+    public function editUser2(Request $request){
+        $user = User::find($request->id);
+        return Inertia::render('User2.Edit',[
+            'permissions'=>Permission::pluck('name')->all(),
+            'user'=>$user
+        ]);
     }
 }
