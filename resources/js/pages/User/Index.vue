@@ -52,7 +52,11 @@ function userDelete(id){
                             </td>
                             <td class="px-4 py-2 space-x-2">
                                 <Link v-if="can('users.view')" :href="`users/${user.id}`"class="bg-gray-500 text-white px-2 py-1 rounded pointer">Show</Link>
-                                <Link v-if="can('users.edit')" :href="`users/${user.id}/edit`"class="bg-blue-500 text-white px-2 py-1 rounded pointer">Edit</Link>
+                                <Link v-if="can('users.edit')" 
+                                    :href="user.user_type===1 ? `users/${user.id}/edit` : `edit-user2/${user.id}`"
+                                    
+                                    class="bg-blue-500 text-white px-2 py-1 rounded pointer">Edit
+                                </Link>
                                 <button v-if="can('users.delete')" @click="userDelete(user.id)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                             </td>
                         </tr>

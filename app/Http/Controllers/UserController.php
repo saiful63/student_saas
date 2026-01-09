@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
+use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -40,10 +40,9 @@ class UserController extends Controller
             'name'=>['required'],
             'email'=>['required'],
             'password'=>['required'],
-            'user_type'=>1
         ]);
         $user = User::create(
-            $request->only(['name','email'])+['password'=>Hash::make($request->password)]
+            $request->only(['name','email'])+['password'=>Hash::make($request->password)]+['user_type'=>1]
         );
         $user->syncRoles($request->roles);
         return to_route("users.index");
@@ -108,21 +107,39 @@ class UserController extends Controller
             'name'=>['required'],
             'email'=>['required'],
             'password'=>['required'],
-            'user_type'=>2
         ]);
         $user = User::create(
-            $request->only(['name','email'])+['password'=>Hash::make($request->password)]
+            $request->only(['name','email'])+['password'=>Hash::make($request->password)]+['user_type'=>2]
         );
         
         $user->givePermissionTo($request->selectedPermission);
         return to_route("users.index");
     }
 
-    public function editUser2(Request $request){
-        $user = User::find($request->id);
-        return Inertia::render('User2.Edit',[
+    public function editUser2(Request $request,string $id){
+        $user = User::find($id);
+        $permissionAssignedToUser = $user->permissions->pluck('name');
+        return Inertia::render('User2/Edit',[
             'permissions'=>Permission::pluck('name')->all(),
-            'user'=>$user
+            'user'=>$user,
+            'permissionAssignedToUser'=>$permissionAssignedToUser
         ]);
+    }
+    public function updateUser2(Request $request,string $id)
+    {
+        $request->validate([
+            'name' => ['required'],
+            'email' => ['required'],
+            'editPermissions'=>['required']
+        ]);
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if($request->password){
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+        $user->syncPermissions($request->editPermissions);
+        return to_route("users.index");
     }
 }

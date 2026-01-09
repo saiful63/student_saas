@@ -13,16 +13,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const props=defineProps({
     user:Object,
-    permissions:Array
+    permissions:Array,
+    permissionAssignedToUser:Array
 });
 const form = useForm({
     name:props.user.name,
     email:props.user.email,
     password:"",
+    editPermissions:props.permissionAssignedToUser??[]
 
 });
 function update(){
-    form.put(`/users/${props.user.id}`)
+    form.put(`/update-user2/${props.user.id}`)
 }
 
 </script>
@@ -84,7 +86,7 @@ function update(){
                     </button>
                         <div class="flex flex-col space-y-2">
                             <label v-for="permission in props.permissions" :key="permission">
-                                <input type="checkbox" :value="permission" v-model="form.perms"  />
+                                <input type="checkbox" :value="permission" v-model="form.editPermissions"  />
                                 <span>
 
                                 {{ permission }}
