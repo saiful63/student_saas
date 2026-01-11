@@ -22,6 +22,7 @@ class PermissionController extends Controller
         Permission::create([
             'name'=>$request->name
         ]);
+        return to_route("permission.index");
     }
     public function createPermissionInterface(Request $request){
         return Inertia::render('Permission/CreatePermissionInterface');

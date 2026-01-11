@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -19,9 +20,11 @@ class UserSeeder extends Seeder
             'name' => 'superadmin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make(12345678),
-            'user_type'=>1
+            'user_type'=>2
         ]);
-        $permissions = Permission::pluck('name')->all();
-        $user->givePermissionTo($permissions);
+        Role::create([
+            'name'=>'systemsuperadmin'
+        ]);
+        $user->assignRole('systemsuperadmin');
     }
 }

@@ -37,11 +37,13 @@ Route::resource('users', UserController::class)->middleware([
     'update' => 'permission:users.edit',
 ]);
 
+Route::middleware(['permission:create.user2'])->group(function(){
+    Route::get('index/create2/user',[UserController::class,'indexCreate2User'])->name('index.create2.user');
+    Route::post('save/create2/user',[UserController::class,'saveCreate2User'])->name('save.create2.user');
+    Route::get('edit-user2/{id}',[UserController::class,'editUser2'])->name('edit.user2');
+    Route::put('update-user2/{id}',[UserController::class,'updateUser2'])->name('update.user2');
+});
 
-Route::get('index/create2/user',[UserController::class,'indexCreate2User'])->name('index.create2.user');
-Route::post('save/create2/user',[UserController::class,'saveCreate2User'])->name('save.create2.user');
-Route::get('edit-user2/{id}',[UserController::class,'editUser2'])->name('edit.user2');
-Route::put('update-user2/{id}',[UserController::class,'updateUser2'])->name('update.user2');
 
 Route::get('permission-index',[PermissionController::class,'index'])->name('permission.index');
 Route::post('create-permission',[PermissionController::class,'createPermission'])->name('create.permission');
