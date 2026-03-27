@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
+            'institutions'=>\App\Models\Institution::all(['id','name'])
         ]);
     }
 
@@ -32,6 +34,14 @@ class AuthenticatedSessionController extends Controller
     {
         $user = $request->validateCredentials();
 
+        $institutionId = $request->input('institution_id');
+
+        // if(!$user->institutions()->where('id',$institutionId)->exists()){
+        //     Auth::logout();
+        //     throw \Illuminate\Validation\ValidationException::withMessages([
+        //         'institution_id'=>'You do not have permission to access this institution!'
+        //     ]);
+        // }
         if (Features::enabled(Features::twoFactorAuthentication()) && $user->hasEnabledTwoFactorAuthentication()) {
             $request->session()->put([
                 'login.id' => $user->getKey(),
@@ -42,6 +52,10 @@ class AuthenticatedSessionController extends Controller
         }
 
         Auth::login($user, $request->boolean('remember'));
+
+        $request->session()->put('active_institution_id',$institutionId);
+
+        // setPermisionsTeamId($institutionId);
 
         $request->session()->regenerate();
 

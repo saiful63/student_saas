@@ -17,6 +17,7 @@ import { type BreadcrumbItem } from '@/types';
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    institution_data?:{id:number;name:string}
 }
 
 defineProps<Props>();
@@ -42,7 +43,9 @@ const user = page.props.auth.user;
                     title="Profile information"
                     description="Update your name and email address"
                 />
-
+                <div>
+                    <span>Institution: {{ institution_data.name }}</span>
+                </div>
                 <Form
                     v-bind="ProfileController.update.form()"
                     class="space-y-6"

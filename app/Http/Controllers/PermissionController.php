@@ -42,4 +42,7 @@ class PermissionController extends Controller
         $permission->name = $request->name;
         return to_route("permission.index");
     }
+    public function assignInstitutionPermission(Request $request){
+
+    }
 }

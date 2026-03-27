@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head,Link,useForm } from '@inertiajs/vue3';
+import { Head,Link,useForm,router } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
+import axios from 'axios'
+import {ref} from 'vue'
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -12,16 +15,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const props = defineProps({
-    permissions:Array
+    permissions:Array,
+    institutions:Array
 });
 const form = useForm({
     name:"",
     email:"",
     password:"",
-    selectedPermission:[]
+    selectedPermission:[],
+    institution_id:""
 });
+const permissions = ref({});
+
 function submit(){
     form.post('/save/create2/user')
+}
+
+const fetchPermissions = async () => {
+    const res = await axios.post(route('get.company.wise.permission'), {
+        params: {
+            institution_id: form.institution_id
+        }
+    })
+
+    permissions.value = res.data.permissions
+    
 }
 
 </script>
@@ -74,6 +92,15 @@ function submit(){
                         />
                         <p v-if="form.errors.password" class="text-red-500 text-sm mt-1">{{ form.errors.password }}.</p>
                     </div>
+                    <div class="grid gap-2">
+                        <label for="institution_id">Institution</label>
+                        <select class="block w-full rounded-md border-gray-300 shadow-sm cursor-pointer p-2.5" id="institution_id" v-model="form.institution_id" @change="fetchPermissions">
+                            <option value="" disabled>Please,select...</option>
+                            <option v-for="institution in props.institutions" :key="institution.id" :value="institution.id" >
+                                {{ institution.name }}
+                            </option>
+                        </select>
+                    </div>
 
                     <button
                         type="submit"
@@ -83,7 +110,7 @@ function submit(){
                     </button>
 
                     <div class="flex flex-col space-y-2">
-                            <label v-for="permission in props.permissions" :key="permission">
+                            <label v-for="permission in permissions" :key="permission">
                                 <input type="checkbox" :value="permission" v-model="form.selectedPermission"  />
                                 <span>
                                 {{ permission }}

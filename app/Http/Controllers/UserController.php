@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Institution;
+use App\Models\InstitutionPermission;
 use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
@@ -29,6 +32,18 @@ class UserController extends Controller
         return Inertia::render('User/Create',[
             'roles'=>Role::pluck('name')->all()
         ]);
+    }
+    public function companyWisePermission(Request $request){
+    
+        $institutionId = $request->institution_id;
+        $permissions = InstitutionPermission::with('permission')
+            ->where('institution_id', $institutionId)
+            ->get()
+            ->pluck('permission.name', 'permission.id');
+
+            return response()->json([
+                'permissions' => $permissions
+            ]);
     }
 
     /**
@@ -98,7 +113,8 @@ class UserController extends Controller
 
     public function indexCreate2User(){
         return Inertia::render('User2/Create',[
-            'permissions'=>Permission::pluck('name')->all()
+            'permissions'=>Permission::pluck('name')->all(),
+            'institutions'=>Institution::all(['id','name'])
         ]);
     }
 
@@ -107,12 +123,23 @@ class UserController extends Controller
             'name'=>['required'],
             'email'=>['required'],
             'password'=>['required'],
+            'institution_id'=>['required']
         ]);
         $user = User::create(
             $request->only(['name','email'])+['password'=>Hash::make($request->password)]+['user_type'=>2]
         );
         
         $user->givePermissionTo($request->selectedPermission);
+        $institutionId = $request->input('institution_id');
+        $userId = auth()->id();
+        $user->institutions()->syncWithoutDetaching(
+            [
+                $institutionId=>[
+                    'createdBy'=>$userId,
+                    'updatedBy'=>$userId,
+                ]
+            ]
+        );
         return to_route("users.index");
     }
 

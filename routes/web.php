@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,6 +41,7 @@ Route::resource('users', UserController::class)->middleware([
 Route::middleware(['permission:create.user2'])->group(function(){
     Route::get('index/create2/user',[UserController::class,'indexCreate2User'])->name('index.create2.user');
     Route::post('save/create2/user',[UserController::class,'saveCreate2User'])->name('save.create2.user');
+    Route::post('get/company-wise/permission',[UserController::class,'companyWisePermission'])->name('get.company.wise.permission');
     Route::get('edit-user2/{id}',[UserController::class,'editUser2'])->name('edit.user2');
     Route::put('update-user2/{id}',[UserController::class,'updateUser2'])->name('update.user2');
 });
@@ -51,6 +53,12 @@ Route::get('create-permission-interface',[PermissionController::class,'createPer
 Route::get('edit-permission/{id}',[PermissionController::class,'editPermission'])->name('edit.permission');
 Route::post('delete-permission',[PermissionController::class,'deletePermission'])->name('delete.permission');
 Route::post('update-permission/{id}',[PermissionController::class,'updatePermission'])->name('update.permission');
+
+// Route::get('assign-institution-permission-',[PermissionController::class,'assignInstitutionPermission'])->name('assign.institution.permission');
+
+Route::get('index-institution',[InstitutionController::class,'indexInstitution'])->name('index.institution');
+Route::post('create-institution',[InstitutionController::class,'createInstitution'])->name('create.institution');
+Route::get('list-institution',[InstitutionController::class,'listInstitution'])->name('list.institution');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

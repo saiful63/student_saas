@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid,Users,Notebook,UserRoundCheck } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid,Users,Notebook,UserRoundCheck ,Landmark} from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import {route} from 'ziggy-js'
 
@@ -38,6 +38,11 @@ const mainNavItems: NavItem[] = [
         title: 'Permission',
         href: '/permission-index',
         icon: UserRoundCheck
+    },
+    {
+        title: 'Institution',
+        href: '/index-institution',
+        icon: Landmark
     },
 ];
 
